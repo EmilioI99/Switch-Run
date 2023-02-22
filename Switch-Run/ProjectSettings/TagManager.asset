@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Yellow
+  - Green
+  - Red
+  - Blue
+  - Orange
   layers:
   - Default
   - TransparentFX
@@ -13,8 +18,8 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
-  - 
+  - 'Item '
+  - Player
   - 
   - 
   - 

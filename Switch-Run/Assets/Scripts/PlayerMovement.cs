@@ -4,6 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D body;
     private Animator anim;
+    private Vector3 colliderOffset;
 
     [Header("Physics")]
     [SerializeField] private float speed = 4;
@@ -14,11 +15,16 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundLayer;
     public float groundLength = 0.8f;
     public bool grounded;
-    public Vector3 colliderOffset; 
+    
+
+    [Header("Multipliers")]
+    public float speedMultiplier = 2;
 
 
     private void Awake()
     {
+        colliderOffset = new Vector3(0.25f, 0.0f, 0.0f);
+
         //Grab references for the Animator and Rigidbody2D
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -47,6 +53,19 @@ public class PlayerMovement : MonoBehaviour
         //Set Animator Parameters
         anim.SetBool("walk", horizontalInput != 0);
         anim.SetBool("grounded", grounded);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.layer == 7)
+        {
+            Destroy(collision.gameObject);
+            if(collision.tag == "Yellow")
+            {
+                Debug.Log("Mamado");
+                speed *= speedMultiplier;
+            }
+        }
     }
 
     private void Jump()
