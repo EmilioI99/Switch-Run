@@ -5,20 +5,28 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D body;
     private Animator anim;
     private Vector3 colliderOffset;
+    float pickupTime; 
 
     [Header("Physics")]
     [SerializeField] private float speed = 4;
     [SerializeField] private float jumpPower = 8;
-    
-    
+
+
     [Header("Collision")]
     public LayerMask groundLayer;
     public float groundLength = 0.8f;
     public bool grounded;
-    
+
+    [Header("PowerUps")]
+    public bool yellow;
+    public bool green;
+    public bool red;
+    public bool blue;
+    public bool orange;
 
     [Header("Multipliers")]
     public float speedMultiplier = 2;
+    public float speedTime = 5; 
 
 
     private void Awake()
@@ -48,22 +56,35 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && grounded)
             Jump();
-            
+
+        //Update Powerups when grabbing items
+        if(yellow && Time.time > pickupTime +  speedTime)
+        {
+            yellow = false;
+            speed /= speedMultiplier;
+        }
+
 
         //Set Animator Parameters
         anim.SetBool("walk", horizontalInput != 0);
         anim.SetBool("grounded", grounded);
     }
 
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //Set Powerups when grabbing items
         if(collision.gameObject.layer == 7)
         {
             Destroy(collision.gameObject);
+
+
             if(collision.tag == "Yellow")
             {
-                Debug.Log("Mamado");
+                pickupTime = Time.time;
+                yellow = true;
                 speed *= speedMultiplier;
+                Debug.Log(collision.tag);
             }
         }
     }
