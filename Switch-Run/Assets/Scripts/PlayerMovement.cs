@@ -2,16 +2,18 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private Rigidbody2D body;
+    private Animator anim;
+
     [Header("Physics")]
     [SerializeField] private float speed = 4;
     [SerializeField] private float jumpPower = 8;
-    private Rigidbody2D body;
-    private Animator anim;
-    private bool grounded;
+    
     
     [Header("Collision")]
     public LayerMask groundLayer;
     public float groundLength = 0.8f;
+    private bool grounded;
 
 
     private void Awake()
@@ -51,11 +53,6 @@ public class PlayerMovement : MonoBehaviour
         grounded = false;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Ground")
-            grounded = true;
-    }
 
     public void OnDrawGizmos()
     {
