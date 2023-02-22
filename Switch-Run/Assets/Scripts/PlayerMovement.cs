@@ -2,11 +2,16 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Physics")]
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     private Rigidbody2D body;
     private Animator anim;
     private bool grounded;
+    
+    [Header("Collision")]
+    public LayerMask groundLayer;
+    public float groundLength = 0.8f;
 
 
     private void Awake()
@@ -21,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+
+        //Raycast for Jumping 
+        grounded = Physics2D.Raycast(transform.position, Vector2.down, groundLength, groundLayer);
 
         //Flip player when moving
         if (horizontalInput > 0.01f)
@@ -49,8 +57,10 @@ public class PlayerMovement : MonoBehaviour
             grounded = true;
     }
 
-    private bool isGrounded()
+    public void OnDrawGizmos()
     {
-        return false;
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundLength);
     }
+
 }
