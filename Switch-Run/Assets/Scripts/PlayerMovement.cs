@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public bool blue;
     public bool orange;
 
+    
+
     [Header("Multipliers")]
     public float speedMultiplier = 2;
     public float speedTime = 5; 
@@ -58,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
             Jump();
 
         //Update Powerups when grabbing items
-        if(yellow && Time.time > pickupTime +  speedTime)
+        if (yellow && Time.time > pickupTime +  speedTime)
         {
             yellow = false;
             speed /= speedMultiplier;
@@ -85,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
                 yellow = true;
                 speed *= speedMultiplier;
                 Debug.Log(collision.tag);
+                
             }
         }
     }
