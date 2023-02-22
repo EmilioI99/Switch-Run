@@ -13,7 +13,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Collision")]
     public LayerMask groundLayer;
     public float groundLength = 0.8f;
-    private bool grounded;
+    public bool grounded;
+    public Vector3 colliderOffset; 
 
 
     private void Awake()
@@ -30,7 +31,8 @@ public class PlayerMovement : MonoBehaviour
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
         //Raycast for Jumping 
-        grounded = Physics2D.Raycast(transform.position, Vector2.down, groundLength, groundLayer);
+        grounded = Physics2D.Raycast(transform.position + colliderOffset, Vector2.down, groundLength, groundLayer) ||
+                   Physics2D.Raycast(transform.position - colliderOffset, Vector2.down, groundLength, groundLayer); 
 
         //Flip player when moving
         if (horizontalInput > 0.01f)
@@ -57,7 +59,8 @@ public class PlayerMovement : MonoBehaviour
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundLength);
+        Gizmos.DrawLine(transform.position + colliderOffset, transform.position + colliderOffset + Vector3.down * groundLength);
+        Gizmos.DrawLine(transform.position - colliderOffset, transform.position - colliderOffset + Vector3.down * groundLength);
     }
 
 }
