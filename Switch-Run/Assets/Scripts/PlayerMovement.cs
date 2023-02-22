@@ -5,7 +5,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D body;
     private Animator anim;
     private Vector3 colliderOffset;
-    float pickupTime; 
+    float pickupTime;
+    public AnimatorOverrideController yellowanim;
 
     [Header("Physics")]
     [SerializeField] private float speed = 4;
@@ -29,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Multipliers")]
     public float speedMultiplier = 2;
     public float speedTime = 5; 
+
 
 
     private void Awake()
@@ -83,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
 
             if(collision.tag == "Yellow")
             {
+                YellowSkin();
                 pickupTime = Time.time;
                 yellow = true;
                 speed *= speedMultiplier;
@@ -96,6 +99,11 @@ public class PlayerMovement : MonoBehaviour
     {
         body.velocity = new Vector2(body.velocity.x, jumpPower);
         grounded = false;
+    }
+
+    public void YellowSkin()
+    {
+        GetComponent<Animator>().runtimeAnimatorController = yellowanim as RuntimeAnimatorController;
     }
 
 
