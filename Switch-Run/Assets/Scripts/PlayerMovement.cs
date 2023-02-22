@@ -3,8 +3,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Physics")]
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpPower;
+    [SerializeField] private float speed = 4;
+    [SerializeField] private float jumpPower = 8;
     private Rigidbody2D body;
     private Animator anim;
     private bool grounded;
