@@ -21,11 +21,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("PowerUps")]
     public bool yellow;
-    public bool green;
-    public bool red;
-    public bool blue;
     public bool orange;
-
+    public bool red;
+    public bool green;
+    public bool blue;
+    
 
     [Header("Multipliers")]
     public float buffedSpeed = 8;
@@ -36,7 +36,9 @@ public class PlayerMovement : MonoBehaviour
     public AnimatorOverrideController normalanim;
     public AnimatorOverrideController yellowanim;
     public AnimatorOverrideController orangeanim;
-    
+    public AnimatorOverrideController redanim;
+    public AnimatorOverrideController greenanim;
+    public AnimatorOverrideController blueanim;
 
 
     private void Awake()
@@ -84,7 +86,22 @@ public class PlayerMovement : MonoBehaviour
             orange = false;
             NormalSkin();
         }
-
+        if (red && Time.time > pickupTime + speedTime)
+        {
+            red = false;
+            NormalSkin();
+        }
+        if (green && Time.time > pickupTime + speedTime)
+        {
+            green = false;
+            NormalSkin();
+        }
+        if (blue && Time.time > pickupTime + speedTime)
+        {
+            blue = false;
+            NormalSkin();
+        }
+        
 
         //Set Animator Parameters
         anim.SetBool("walk", horizontalInput != 0);
@@ -112,6 +129,18 @@ public class PlayerMovement : MonoBehaviour
                     OrangeSkin();
                     orange = true;
                     break;
+                case "Red":
+                    RedSkin();
+                    red = true;
+                    break;
+                case "Green":
+                    GreenSkin();
+                    green = true;
+                    break;
+                case "Blue":
+                    BlueSkin();
+                    blue = true;
+                    break;
             }
         }
     }
@@ -135,8 +164,18 @@ public class PlayerMovement : MonoBehaviour
     {
         GetComponent<Animator>().runtimeAnimatorController = orangeanim as RuntimeAnimatorController;
     }
-
-   
+    public void RedSkin()
+    {
+        GetComponent<Animator>().runtimeAnimatorController = redanim as RuntimeAnimatorController;
+    }
+    public void GreenSkin()
+    {
+        GetComponent<Animator>().runtimeAnimatorController = greenanim as RuntimeAnimatorController;
+    }
+    public void BlueSkin()
+    {
+        GetComponent<Animator>().runtimeAnimatorController = blueanim as RuntimeAnimatorController;
+    }
 
 
     public void OnDrawGizmos()
