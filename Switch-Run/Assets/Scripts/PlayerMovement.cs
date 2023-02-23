@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
     private Vector3 colliderOffset;
     float pickupTime;
-    public AnimatorOverrideController yellowanim;
+    float baseSpeed;
 
     [Header("Physics")]
     [SerializeField] private float speed = 4;
@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     public float groundLength = 0.8f;
     public bool grounded;
 
+
     [Header("PowerUps")]
     public bool yellow;
     public bool green;
@@ -25,17 +26,23 @@ public class PlayerMovement : MonoBehaviour
     public bool blue;
     public bool orange;
 
-    
 
     [Header("Multipliers")]
-    public float speedMultiplier = 2;
-    public float speedTime = 5; 
+    public float buffedSpeed = 8;
+    public float speedTime = 5;
 
+
+    [Header("Animation Override Controls")]
+    public AnimatorOverrideController normalanim;
+    public AnimatorOverrideController yellowanim;
+    public AnimatorOverrideController orangeanim;
+    
 
 
     private void Awake()
     {
         colliderOffset = new Vector3(0.25f, 0.0f, 0.0f);
+        baseSpeed = speed;
 
         //Grab references for the Animator and Rigidbody2D
         body = GetComponent<Rigidbody2D>();
@@ -58,14 +65,24 @@ public class PlayerMovement : MonoBehaviour
         else if (horizontalInput < -0.01f)
             transform.localScale = new Vector3(-3, 3, 3);
 
-        if (Input.GetKey(KeyCode.Space) && grounded)
+        if (Input.GetKey(KeyCode.Space) && (grounded || orange))
+        {
             Jump();
+        }
+            
 
-        //Update Powerups when grabbing items
+        
+        //Cancel powerups when timer is done
         if (yellow && Time.time > pickupTime +  speedTime)
         {
             yellow = false;
-            speed /= speedMultiplier;
+            speed = baseSpeed;
+            NormalSkin();
+        }
+        if (orange && Time.time > pickupTime + speedTime)
+        {
+            orange = false;
+            NormalSkin();
         }
 
 
@@ -81,16 +98,20 @@ public class PlayerMovement : MonoBehaviour
         if(collision.gameObject.layer == 7)
         {
             Destroy(collision.gameObject);
+            pickupTime = Time.time;
+            Debug.Log("Picked up: " + collision.tag);
 
-
-            if(collision.tag == "Yellow")
+            switch (collision.tag)
             {
-                YellowSkin();
-                pickupTime = Time.time;
-                yellow = true;
-                speed *= speedMultiplier;
-                Debug.Log(collision.tag);
-                
+                case "Yellow":
+                    YellowSkin();  
+                    yellow = true;
+                    speed = buffedSpeed;                   
+                    break;
+                case "Orange":
+                    OrangeSkin();
+                    orange = true;
+                    break;
             }
         }
     }
@@ -101,10 +122,21 @@ public class PlayerMovement : MonoBehaviour
         grounded = false;
     }
 
+    public void NormalSkin()
+    {
+        GetComponent<Animator>().runtimeAnimatorController = normalanim as RuntimeAnimatorController;
+    }
+
     public void YellowSkin()
     {
         GetComponent<Animator>().runtimeAnimatorController = yellowanim as RuntimeAnimatorController;
     }
+    public void OrangeSkin()
+    {
+        GetComponent<Animator>().runtimeAnimatorController = orangeanim as RuntimeAnimatorController;
+    }
+
+   
 
 
     public void OnDrawGizmos()
