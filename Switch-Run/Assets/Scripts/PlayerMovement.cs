@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using DentedPixel;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -29,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Multipliers")]
     public float buffedSpeed = 8;
-    public float speedTime = 5;
+    public float powerUpTime = 5;
 
 
     [Header("Animation Override Controls")]
@@ -39,6 +41,10 @@ public class PlayerMovement : MonoBehaviour
     public AnimatorOverrideController redanim;
     public AnimatorOverrideController greenanim;
     public AnimatorOverrideController blueanim;
+
+    [Header("PowerUp Bar")]
+    public GameObject bg;
+    public GameObject bar;
 
 
     private void Awake()
@@ -75,31 +81,36 @@ public class PlayerMovement : MonoBehaviour
 
         
         //Cancel powerups when timer is done
-        if (yellow && Time.time > pickupTime +  speedTime)
+        if (yellow && Time.time > pickupTime +  powerUpTime)
         {
             yellow = false;
             speed = baseSpeed;
             NormalSkin();
+            bg.SetActive(false);
         }
-        if (orange && Time.time > pickupTime + speedTime)
+        if (orange && Time.time > pickupTime + powerUpTime)
         {
             orange = false;
             NormalSkin();
+            bg.SetActive(false);
         }
-        if (red && Time.time > pickupTime + speedTime)
+        if (red && Time.time > pickupTime + powerUpTime)
         {
             red = false;
             NormalSkin();
+            bg.SetActive(false);
         }
-        if (green && Time.time > pickupTime + speedTime)
+        if (green && Time.time > pickupTime + powerUpTime)
         {
             green = false;
             NormalSkin();
+            bg.SetActive(false);
         }
-        if (blue && Time.time > pickupTime + speedTime)
+        if (blue && Time.time > pickupTime + powerUpTime)
         {
             blue = false;
             NormalSkin();
+            bg.SetActive(false);
         }
         
 
@@ -117,31 +128,49 @@ public class PlayerMovement : MonoBehaviour
             Destroy(collision.gameObject);
             pickupTime = Time.time;
             Debug.Log("Picked up: " + collision.tag);
+            bg.SetActive(true);
+            bar.transform.localScale = new Vector3(1, 1, 1);
 
             switch (collision.tag)
             {
                 case "Yellow":
                     YellowSkin();  
                     yellow = true;
-                    speed = buffedSpeed;                   
+                    speed = buffedSpeed;
+                    Color yellowColor = new Color(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
+                    bar.GetComponent<Image>().color = yellowColor;
+                    AnimateBar();
                     break;
                 case "Orange":
                     OrangeSkin();
                     orange = true;
+                    Color orangeColor = new Color(1.0f, 0.5f, 0.0f, 1.0f); // Orange
+                    bar.GetComponent<Image>().color = orangeColor;
+                    AnimateBar();
                     break;
                 case "Red":
                     RedSkin();
                     red = true;
+                    Color redColor = new Color(1.0f, 0.0f, 0.0f, 1.0f); // Red
+                    bar.GetComponent<Image>().color = redColor;
+                    AnimateBar();
                     break;
                 case "Green":
                     GreenSkin();
                     green = true;
+                    Color greenColor = new Color(0.0f, 1.0f, 0.0f, 1.0f); // Green
+                    bar.GetComponent<Image>().color = greenColor;
+                    AnimateBar();
                     break;
                 case "Blue":
                     BlueSkin();
                     blue = true;
+                    Color cyanColor = new Color(0.0f, 1.0f, 1.0f, 1.0f); // Cyan
+                    bar.GetComponent<Image>().color = cyanColor;
+                    AnimateBar();
                     break;
             }
+            
         }
     }
 
@@ -175,6 +204,11 @@ public class PlayerMovement : MonoBehaviour
     public void BlueSkin()
     {
         GetComponent<Animator>().runtimeAnimatorController = blueanim as RuntimeAnimatorController;
+    }
+
+    public void AnimateBar()
+    {
+        LeanTween.scaleX(bar, 0, powerUpTime);
     }
 
 
