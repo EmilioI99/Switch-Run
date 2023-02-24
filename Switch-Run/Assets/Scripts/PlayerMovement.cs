@@ -134,35 +134,45 @@ public class PlayerMovement : MonoBehaviour
 
         
         //Cancel powerups when timer is done
-        if (yellowActive && Time.time > activationTime +  powerUpTime)
+        if ((yellowActive && Time.time > activationTime +  powerUpTime) || Input.GetMouseButtonDown(1))
         {
+            yellow = false;
             yellowActive = false;
             speed = baseSpeed;
             NormalSkin();
+            StopBarAnimation();
             bg.SetActive(false);
         }
-        if (orangeActive && Time.time > activationTime + powerUpTime)
+        if ((orangeActive && Time.time > activationTime + powerUpTime) || Input.GetMouseButtonDown(1))
         {
+            orange = false;
             orangeActive = false;
             NormalSkin();
+            StopBarAnimation();
             bg.SetActive(false);
         }
-        if (redActive && Time.time > activationTime + powerUpTime)
+        if ((redActive && Time.time > activationTime + powerUpTime) || Input.GetMouseButtonDown(1))
         {
+            red = false;
             redActive = false;
             NormalSkin();
+            StopBarAnimation();
             bg.SetActive(false);
         }
-        if (greenActive && Time.time > activationTime + powerUpTime)
+        if ((greenActive && Time.time > activationTime + powerUpTime) || Input.GetMouseButtonDown(1))
         {
+            green = false;
             greenActive = false;
             NormalSkin();
+            StopBarAnimation();
             bg.SetActive(false);
         }
-        if (blueActive && Time.time > activationTime + powerUpTime)
+        if ((blueActive && Time.time > activationTime + powerUpTime) || Input.GetMouseButtonDown(1))
         {
+            blue = false;
             blueActive = false;
             NormalSkin();
+            StopBarAnimation();
             bg.SetActive(false);
         }
         
@@ -259,6 +269,11 @@ public class PlayerMovement : MonoBehaviour
         //It animates the bar from where it is to the value of 0 in powerUpTime seconds
         LeanTween.scaleX(bar, 0, powerUpTime);
     }
+    public void StopBarAnimation()
+    {
+        LeanTween.cancel(bar);
+    }
+
 
 
     public void OnDrawGizmos()
