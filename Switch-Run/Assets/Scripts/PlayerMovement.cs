@@ -7,8 +7,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D body;
     private Animator anim;
     private Vector3 colliderOffset;
-    float pickupTime;
     float baseSpeed;
+    float activationTime;
 
     [Header("Physics")]
     [SerializeField] private float speed = 4;
@@ -23,11 +23,16 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("PowerUps")]
     public bool yellow;
+    public bool yellowActive;
     public bool orange;
+    public bool orangeActive;
     public bool red;
+    public bool redActive;
     public bool green;
+    public bool greenActive;
     public bool blue;
-    
+    public bool blueActive;
+
 
     [Header("Multipliers")]
     public float buffedSpeed = 8;
@@ -49,7 +54,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        //Offset used in raytracing for jump
         colliderOffset = new Vector3(0.25f, 0.0f, 0.0f);
+
+        //Base speed of the player
         baseSpeed = speed;
 
         //Grab references for the Animator and Rigidbody2D
@@ -60,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        //Player movement with input keys
         float horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
@@ -73,42 +82,86 @@ public class PlayerMovement : MonoBehaviour
         else if (horizontalInput < -0.01f)
             transform.localScale = new Vector3(-3, 3, 3);
 
-        if (Input.GetKey(KeyCode.Space) && (grounded || orange))
+        //Jump activation with key input
+        if (Input.GetKey(KeyCode.Space) && grounded)
         {
             Jump();
         }
-            
+
+        //Activate  powers on left click
+        if (Input.GetMouseButtonDown(0) && (yellow || orange || red || green || blue))
+        {
+            Debug.Log("Activated Powerup");
+            activationTime = Time.time;
+
+            if (yellow)
+            {
+                yellow = false;
+                yellowActive = true;
+                YellowSkin();
+                speed = buffedSpeed;
+                AnimateBar();
+            }
+            else if (orange) 
+            {
+                orange = false;
+                orangeActive = true;
+                OrangeSkin();
+                AnimateBar();
+            }
+            else if (red)
+            {
+                red = false;
+                redActive = true;
+                RedSkin();
+                AnimateBar();
+            }
+            else if (green)
+            {
+                green = false;
+                greenActive = true;
+                GreenSkin();
+                AnimateBar();
+            }
+            else if (blue)
+            {
+                blue = false;
+                blueActive = true;
+                BlueSkin();
+                AnimateBar();
+            }
+        }
 
         
         //Cancel powerups when timer is done
-        if (yellow && Time.time > pickupTime +  powerUpTime)
+        if (yellowActive && Time.time > activationTime +  powerUpTime)
         {
-            yellow = false;
+            yellowActive = false;
             speed = baseSpeed;
             NormalSkin();
             bg.SetActive(false);
         }
-        if (orange && Time.time > pickupTime + powerUpTime)
+        if (orangeActive && Time.time > activationTime + powerUpTime)
         {
-            orange = false;
+            orangeActive = false;
             NormalSkin();
             bg.SetActive(false);
         }
-        if (red && Time.time > pickupTime + powerUpTime)
+        if (redActive && Time.time > activationTime + powerUpTime)
         {
-            red = false;
+            redActive = false;
             NormalSkin();
             bg.SetActive(false);
         }
-        if (green && Time.time > pickupTime + powerUpTime)
+        if (greenActive && Time.time > activationTime + powerUpTime)
         {
-            green = false;
+            greenActive = false;
             NormalSkin();
             bg.SetActive(false);
         }
-        if (blue && Time.time > pickupTime + powerUpTime)
+        if (blueActive && Time.time > activationTime + powerUpTime)
         {
-            blue = false;
+            blueActive = false;
             NormalSkin();
             bg.SetActive(false);
         }
@@ -123,10 +176,9 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Set Powerups when grabbing items
-        if(collision.gameObject.layer == 7)
+        if(collision.gameObject.layer == 7 && !(yellowActive || orangeActive || redActive || greenActive || blueActive))
         {
             Destroy(collision.gameObject);
-            pickupTime = Time.time;
             Debug.Log("Picked up: " + collision.tag);
             bg.SetActive(true);
             bar.transform.localScale = new Vector3(1, 1, 1);
@@ -134,43 +186,36 @@ public class PlayerMovement : MonoBehaviour
             switch (collision.tag)
             {
                 case "Yellow":
-                    YellowSkin();  
                     yellow = true;
-                    speed = buffedSpeed;
+                    orange = red = green = blue = false;
                     Color yellowColor = new Color(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
                     bar.GetComponent<Image>().color = yellowColor;
-                    AnimateBar();
                     break;
                 case "Orange":
-                    OrangeSkin();
                     orange = true;
+                    yellow = red = green = blue = false;
                     Color orangeColor = new Color(1.0f, 0.5f, 0.0f, 1.0f); // Orange
                     bar.GetComponent<Image>().color = orangeColor;
-                    AnimateBar();
                     break;
                 case "Red":
-                    RedSkin();
                     red = true;
+                    yellow = orange = green = blue = false;
                     Color redColor = new Color(1.0f, 0.0f, 0.0f, 1.0f); // Red
                     bar.GetComponent<Image>().color = redColor;
-                    AnimateBar();
                     break;
                 case "Green":
-                    GreenSkin();
                     green = true;
+                    yellow = orange = red = blue = false;
                     Color greenColor = new Color(0.0f, 1.0f, 0.0f, 1.0f); // Green
                     bar.GetComponent<Image>().color = greenColor;
-                    AnimateBar();
                     break;
                 case "Blue":
-                    BlueSkin();
                     blue = true;
+                    yellow = orange = red = green = false;
                     Color cyanColor = new Color(0.0f, 1.0f, 1.0f, 1.0f); // Cyan
                     bar.GetComponent<Image>().color = cyanColor;
-                    AnimateBar();
                     break;
-            }
-            
+            } 
         }
     }
 
@@ -180,6 +225,7 @@ public class PlayerMovement : MonoBehaviour
         grounded = false;
     }
 
+    //Functions to switch animations when player uses powerups
     public void NormalSkin()
     {
         GetComponent<Animator>().runtimeAnimatorController = normalanim as RuntimeAnimatorController;
@@ -206,14 +252,18 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<Animator>().runtimeAnimatorController = blueanim as RuntimeAnimatorController;
     }
 
+
     public void AnimateBar()
     {
+        //Animates the cooldown bar for powerups
+        //It animates the bar from where it is to the value of 0 in powerUpTime seconds
         LeanTween.scaleX(bar, 0, powerUpTime);
     }
 
 
     public void OnDrawGizmos()
     {
+        //Draws red lines from player visualizing raycasting used in jumps
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position + colliderOffset, transform.position + colliderOffset + Vector3.down * groundLength);
         Gizmos.DrawLine(transform.position - colliderOffset, transform.position - colliderOffset + Vector3.down * groundLength);

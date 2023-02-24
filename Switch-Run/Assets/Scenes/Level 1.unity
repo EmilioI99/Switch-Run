@@ -2060,7 +2060,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 9
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2084,7 +2084,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 16.54, y: 2.65, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2103,10 +2103,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f211c36ce81709b4db356016511dbc6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.5
   player: {fileID: 1579976008}
   aheadDistance: 0
   cameraSpeed: 0
+  yOffset: 2
 --- !u!1 &525447571
 GameObject:
   m_ObjectHideFlags: 0
@@ -4906,7 +4906,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 53.65
+  m_fontSize: 53.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5941,7 +5941,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579976006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 16.54, y: 2.36, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5989,10 +5989,15 @@ MonoBehaviour:
   groundLength: 0.8
   grounded: 0
   yellow: 0
+  yellowActive: 0
   orange: 0
+  orangeActive: 0
   red: 0
+  redActive: 0
   green: 0
+  greenActive: 0
   blue: 0
+  blueActive: 0
   buffedSpeed: 8
   powerUpTime: 5
   normalanim: {fileID: 22100000, guid: 06d939238714ed944a77881ee5210905, type: 2}
