@@ -9,10 +9,12 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 colliderOffset;
     float baseSpeed;
     float activationTime;
+    private bool doubleJump;
+    float horizontalInput;
 
     [Header("Physics")]
     [SerializeField] private float speed = 4;
-    [SerializeField] private float jumpPower = 8;
+    [SerializeField] private float jumpPower = 9;
 
 
     [Header("Collision")]
@@ -69,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         //Player movement with input keys
-        float horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
         //Raycast for Jumping 
@@ -81,11 +83,31 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = new Vector3(3, 3, 3);
         else if (horizontalInput < -0.01f)
             transform.localScale = new Vector3(-3, 3, 3);
-
+        
+        if (grounded && !Input.GetButton("Jump"))
+        {
+            doubleJump = false;
+        }
+        
         //Jump activation with key input
-        if (Input.GetKey(KeyCode.Space) && grounded)
+        if (orangeActive)
+        {
+            //Player can double jump when orange power is active
+            if (Input.GetButtonDown("Jump") && (grounded || doubleJump))
+            {
+                Jump();
+                doubleJump = !doubleJump;
+            }
+        }
+        else if (grounded && Input.GetButtonDown("Jump")) 
         {
             Jump();
+        }
+
+        //Makes player fall faster when letting go of the jump button
+        if (Input.GetButtonUp("Jump") && body.velocity.y > 0f)
+        {
+            body.velocity = new Vector2(body.velocity.x, body.velocity.y * 0.7f);
         }
 
         //Activate  powers on left click
@@ -232,7 +254,10 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         body.velocity = new Vector2(body.velocity.x, jumpPower);
-        grounded = false;
+    }
+    public bool canAttack() 
+    {
+        return horizontalInput == 0 && grounded && redActive;
     }
 
     //Functions to switch animations when player uses powerups
