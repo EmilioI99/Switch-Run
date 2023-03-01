@@ -11,11 +11,13 @@ public class Projectile : MonoBehaviour
 
     private Animator anim;
     private BoxCollider2D boxCollider;
+    private PlayerMovement playerMovement;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
     private void Update()
     {
@@ -30,11 +32,12 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == 7) return;
+
         Debug.Log("Shot hit");
         hit = true;
         anim.SetTrigger("explode");
-        boxCollider.enabled = false;
-        
+        SoundManager.instance.PlaySound(playerMovement.hitsound);
+        boxCollider.enabled = false;  
     }
     public void SetDirection(float _direction)
     {

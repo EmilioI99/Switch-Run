@@ -13,6 +13,14 @@ public class PlayerMovement : MonoBehaviour
     float horizontalInput;
     private Health health;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip pickupsound;
+    [SerializeField] private AudioClip jumpsound;
+    [SerializeField] public AudioClip deathsound;
+    [SerializeField] public AudioClip hitsound;
+    [SerializeField] public AudioClip hurtsound;
+
+
     [Header("Physics")]
     [SerializeField] private float speed = 4;
     [SerializeField] private float jumpPower = 9;
@@ -98,12 +106,14 @@ public class PlayerMovement : MonoBehaviour
             //Player can double jump when orange power is active
             if (Input.GetButtonDown("Jump") && (grounded || doubleJump))
             {
+                SoundManager.instance.PlaySound(jumpsound);
                 Jump();
                 doubleJump = !doubleJump;
             }
         }
         else if (grounded && Input.GetButtonDown("Jump")) 
         {
+            SoundManager.instance.PlaySound(jumpsound);
             Jump();
         }
 
@@ -189,6 +199,7 @@ public class PlayerMovement : MonoBehaviour
         {
             green = false;
             greenActive = false;
+            health.AddHealth(healthValue);
             NormalSkin();
             StopBarAnimation();
             bg.SetActive(false);
@@ -214,6 +225,7 @@ public class PlayerMovement : MonoBehaviour
         //Set Powerups when grabbing items
         if(collision.gameObject.layer == 7 && !(yellowActive || orangeActive || redActive || greenActive || blueActive))
         {
+            SoundManager.instance.PlaySound(pickupsound);
             Destroy(collision.gameObject);
             Debug.Log("Picked up: " + collision.tag);
             bg.SetActive(true);
