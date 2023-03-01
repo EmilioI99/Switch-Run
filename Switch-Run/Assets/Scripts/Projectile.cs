@@ -37,7 +37,7 @@ public class Projectile : MonoBehaviour
         hit = true;
         anim.SetTrigger("explode");
         SoundManager.instance.PlaySound(playerMovement.hitsound);
-        boxCollider.enabled = false;  
+        boxCollider.enabled = false;
     }
     public void SetDirection(float _direction)
     {
