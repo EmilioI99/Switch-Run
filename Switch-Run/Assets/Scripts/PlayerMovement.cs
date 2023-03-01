@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     float activationTime;
     private bool doubleJump;
     float horizontalInput;
+    private Health health;
 
     [Header("Physics")]
     [SerializeField] private float speed = 4;
@@ -39,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Multipliers")]
     public float buffedSpeed = 8;
     public float powerUpTime = 5;
+    public float healthValue = 3;
 
 
     [Header("Animation Override Controls")]
@@ -66,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
+        health = GetComponent<Health>();
     }
 
     private void Update()
@@ -142,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 green = false;
                 greenActive = true;
+                health.AddHealth(healthValue);
                 GreenSkin();
                 AnimateBar();
             }
