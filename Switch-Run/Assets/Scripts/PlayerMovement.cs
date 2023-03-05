@@ -58,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
     public AnimatorOverrideController redanim;
     public AnimatorOverrideController greenanim;
     public AnimatorOverrideController blueanim;
+    
 
     [Header("PowerUp Bar")]
     public GameObject bg;
@@ -86,8 +87,11 @@ public class PlayerMovement : MonoBehaviour
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
         //Raycast for Jumping 
+        
         grounded = Physics2D.Raycast(transform.position + colliderOffset, Vector2.down, groundLength, groundLayer) ||
-                   Physics2D.Raycast(transform.position - colliderOffset, Vector2.down, groundLength, groundLayer); 
+                    Physics2D.Raycast(transform.position - colliderOffset, Vector2.down, groundLength, groundLayer);
+        
+       
 
         //Flip player when moving
         if (horizontalInput > 0.01f)

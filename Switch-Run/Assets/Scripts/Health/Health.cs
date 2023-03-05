@@ -13,6 +13,12 @@ public class Health : MonoBehaviour
     [SerializeField] private int numberOffFlashes;
     private SpriteRenderer spriteRend;
 
+    [Header("Death")]
+    public GameObject ghost;
+    public BoxCollider2D playerCollider;
+    public AnimatorOverrideController deathanim;
+
+
     public float currentHealth { get; private set;}
     private Animator anim;
     public bool dead;
@@ -50,13 +56,21 @@ public class Health : MonoBehaviour
         {
             if (!dead)
             {
-                //player dead
+                //player dead, plays sound and displays on console 
+                dead = true;
                 SoundManager.instance.PlaySound(playerMovement.deathsound);
                 Debug.Log("Dead");
+
+                //death animation and ghost active
+                GetComponent<Animator>().runtimeAnimatorController = deathanim as RuntimeAnimatorController;
                 anim.SetTrigger("die");
+                ghost.SetActive(true);
+
+                //Stop player movement
                 GetComponent<PlayerMovement>().enabled = false;
-                gameObject.SetActive(false);
-                dead = true;
+
+                // Enable second collider component
+                playerCollider.size = new Vector2(0.45f, 0.25f);
             }
         }
     }
