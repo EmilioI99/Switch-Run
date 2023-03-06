@@ -20,11 +20,10 @@ public class Health : MonoBehaviour
 
 
     public float currentHealth { get; private set;}
+    public GameOverScreen gameOverScreen;
     private Animator anim;
     public bool dead;
     private PlayerMovement playerMovement;
-
-    
 
 
     // Start is called before the first frame update
@@ -71,6 +70,9 @@ public class Health : MonoBehaviour
 
                 // Enable second collider component
                 playerCollider.size = new Vector2(0.45f, 0.25f);
+
+                //Call GameOver Screen
+                gameOverScreen.Setup();
             }
         }
     }

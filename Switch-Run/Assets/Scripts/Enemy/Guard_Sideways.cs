@@ -48,8 +48,6 @@ public class Guard_Sideways : MonoBehaviour
         }
         anim.SetBool("moving", true);
 
-
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
