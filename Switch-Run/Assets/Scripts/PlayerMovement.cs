@@ -145,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 orange = false;
                 orangeActive = true;
+                doubleJump = true;
                 OrangeSkin();
                 AnimateBar();
             }
@@ -277,7 +278,7 @@ public class PlayerMovement : MonoBehaviour
     }
     public bool canAttack() 
     {
-        return horizontalInput == 0 && grounded && redActive;
+        return grounded && redActive;
     }
 
     //Functions to switch animations when player uses powerups
