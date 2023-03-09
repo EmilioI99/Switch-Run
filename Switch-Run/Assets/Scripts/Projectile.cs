@@ -32,6 +32,8 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == 7) return;
+        if (collision.gameObject.layer == 9)
+            collision.gameObject.SetActive(false);
 
         Debug.Log("Shot hit");
         hit = true;

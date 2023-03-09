@@ -5,6 +5,9 @@ using System.Collections;
 
 public class Health : MonoBehaviour
 {
+    [SerializeField] public float deathPos = -10;
+    [SerializeField] public float restartPos = 5;
+
     [Header("Health")]
     [SerializeField] private float startingHealth;
 
@@ -19,11 +22,13 @@ public class Health : MonoBehaviour
     public AnimatorOverrideController deathanim;
 
 
-    public float currentHealth { get; private set;}
+    public float currentHealth { get; private set; }
     public GameOverScreen gameOverScreen;
     private Animator anim;
     public bool dead;
     private PlayerMovement playerMovement;
+    private Rigidbody2D rb;
+
 
 
     // Start is called before the first frame update
@@ -33,9 +38,10 @@ public class Health : MonoBehaviour
         anim = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
         spriteRend = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    public void TakeDamage(float _damage) 
+    public void TakeDamage(float _damage)
     {
         if (playerMovement.blueActive)
             return;
@@ -61,6 +67,7 @@ public class Health : MonoBehaviour
                 Debug.Log("Dead");
 
                 //death animation and ghost active
+                rb.gravityScale = 0f;
                 GetComponent<Animator>().runtimeAnimatorController = deathanim as RuntimeAnimatorController;
                 anim.SetTrigger("die");
                 ghost.SetActive(true);
@@ -77,7 +84,7 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void AddHealth(float _value) 
+    public void AddHealth(float _value)
     {
         currentHealth = Mathf.Clamp(currentHealth + _value, 0, startingHealth);
     }
@@ -88,9 +95,9 @@ public class Health : MonoBehaviour
         for (int i = 0; i < numberOffFlashes; i++)
         {
             spriteRend.color = new Color(1, 0, 0, 0.5f);
-            yield return new WaitForSeconds(iFramesDuration/(numberOffFlashes * 2));
+            yield return new WaitForSeconds(iFramesDuration / (numberOffFlashes * 2));
             spriteRend.color = Color.white;
-            yield return new WaitForSeconds(iFramesDuration/(numberOffFlashes * 2));
+            yield return new WaitForSeconds(iFramesDuration / (numberOffFlashes * 2));
 
         }
         Physics2D.IgnoreLayerCollision(8, 9, false);
@@ -100,5 +107,19 @@ public class Health : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
             TakeDamage(1);
+
+        if (transform.position.y < deathPos)
+        {
+            if (playerMovement.blueActive)
+            {
+                transform.position = new Vector3(transform.position.x, restartPos, transform.position.z);
+                rb.velocity = new Vector3(0,0,0);
+            }
+            else
+            {
+                TakeDamage(startingHealth);
+            }
+        }
     }
 }
+
